@@ -33,3 +33,6 @@ int photon_db_insert(PhotonDB* db, const void* in_vector);
 int photon_db_delete(PhotonDB* db, size_t id);
 int photon_db_get(PhotonDB* db, size_t id, const void* out_vector);
 int photon_db_upsert(PhotonDB* db, size_t id, const void* in_vector);
+
+int photon_db_save(PhotonDB* db, const char* filename);
+int photon_db_load(PhotonDB* db, const char* filename);

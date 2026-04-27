@@ -5,6 +5,7 @@ PhotonDB is a lightweight vector database designed and optimized for efficiency 
 ## Key Features
 
 - **Brute-force Search**: High-precision dot product similarity search.
+- **Persistent Storage**: Save and load databases to `.pdb` files via platform hooks.
 - **Portable**: Run anywhere from bare-metal MCUs to Linux systems.
 - **Lightweight**: Minimal memory footprint, ideal for resource-constrained hardware.
 - **Modular**: Clean separation between database logic and platform-dependent code.
@@ -16,15 +17,15 @@ PhotonDB is organized into three distinct layers:
 
 | Layer | Responsibility |
 | :--- | :--- |
-| **Core** | Main database engine, vector storage, and CRUD operations. |
-| **Hooks** | OS abstraction layer for memory management and logging. |
+| **Core** | Main database engine, vector storage, CRUD, and persistence. |
+| **Hooks** | OS abstraction layer for memory, logging, and file I/O. |
 | **Platform** | Build configurations and target-specific integrations. |
 
 ## Getting Started
 
 ### Initialization
 
-Before using PhotonDB, you must provide platform-specific hooks for memory management and logging, then initialize the vector engine:
+Before using PhotonDB, you must provide platform-specific hooks for memory management, logging, and file I/O, then initialize the vector engine:
 
 ```c
 #include "hooks.h"
@@ -37,7 +38,12 @@ PhotonInitStruct hooks = {
     .memcpy = memcpy,
     .memmove = memmove,
     .memset = memset,
-    .log = my_log_function
+    .log = my_log_function,
+    // File I/O hooks for persistence
+    .fopen = my_fopen,
+    .fwrite = my_fwrite,
+    .fread = my_fread,
+    .fclose = my_fclose
 };
 
 photonInit(hooks);
@@ -69,9 +75,12 @@ photon_db_create(&cfg, &db);
 float vector[128] = { ... };
 int id = photon_db_insert(&db, vector);
 
-// Retrieve a vector
-float out_vector[128];
-photon_db_get(&db, id, out_vector);
+// Persistence: Save the database
+photon_db_save(&db, "vectors.pdb");
+
+// Persistence: Load from file
+PhotonDB loaded_db;
+photon_db_load(&loaded_db, "vectors.pdb");
 
 // Search for similar vectors
 #include "search.h"
@@ -80,6 +89,7 @@ int count = photon_db_search_dot_product(&db, query_vector, 5, results);
 
 // Clean up
 photon_db_destroy(&db);
+photon_db_destroy(&loaded_db);
 ```
 
 ## Project Structure

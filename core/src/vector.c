@@ -26,6 +26,132 @@ static int is_hooks_valid() {
           hooks->memset != NULL);
 }
 
+static int are_file_hooks_valid() {
+  return (hooks != NULL &&
+          hooks->fopen != NULL &&
+          hooks->fwrite != NULL &&
+          hooks->fread != NULL &&
+          hooks->fclose != NULL);
+}
+
+typedef struct {
+  char magic[4];
+  uint32_t version;
+  uint32_t dim;
+  uint32_t dtype;
+  uint64_t count;
+  uint64_t next_id;
+} PDBHeader;
+
+int photon_db_save(PhotonDB *db, const char *filename) {
+  if (db == NULL || filename == NULL || !are_file_hooks_valid()) return -1;
+
+  void *f = hooks->fopen(filename, "wb");
+  if (f == NULL) return -1;
+
+  PDBHeader header;
+  hooks->memcpy(header.magic, "PDB", 4);
+  header.version = 1;
+  header.dim = (uint32_t)db->dim;
+  header.dtype = (uint32_t)db->dtype;
+  header.count = (uint64_t)db->count;
+  header.next_id = (uint64_t)db->next_id;
+
+  if (hooks->fwrite(&header, sizeof(PDBHeader), 1, f) != 1) {
+    hooks->fclose(f);
+    return -1;
+  }
+
+  if (db->count > 0) {
+    // Save list of IDs
+    // Since size_t might be 32-bit or 64-bit, we should probably save them as uint64_t for portability
+    // But for simplicity and matching the struct, let's see. 
+    // To be safe, let's write them one by one as uint64_t or use a buffer.
+    for (size_t i = 0; i < db->count; i++) {
+      uint64_t id = (uint64_t)db->list_of_id[i];
+      if (hooks->fwrite(&id, sizeof(uint64_t), 1, f) != 1) {
+        hooks->fclose(f);
+        return -1;
+      }
+    }
+
+    // Save vector data
+    size_t element_size = get_element_size(db->dtype);
+    size_t vector_bytes = db->dim * element_size;
+    if (hooks->fwrite(db->data, vector_bytes, db->count, f) != db->count) {
+      hooks->fclose(f);
+      return -1;
+    }
+  }
+
+  hooks->fclose(f);
+  return 0;
+}
+
+int photon_db_load(PhotonDB *db, const char *filename) {
+  if (db == NULL || filename == NULL || !are_file_hooks_valid() || !is_hooks_valid()) return -1;
+
+  void *f = hooks->fopen(filename, "rb");
+  if (f == NULL) return -1;
+
+  PDBHeader header;
+  if (hooks->fread(&header, sizeof(PDBHeader), 1, f) != 1) {
+    hooks->fclose(f);
+    return -1;
+  }
+
+  // Check magic
+  const char* magic = "PDB";
+  for (int i = 0; i < 3; i++) {
+    if (header.magic[i] != magic[i]) {
+      hooks->fclose(f);
+      return -1;
+    }
+  }
+
+  // Check version
+  if (header.version != 1) {
+    hooks->fclose(f);
+    return -1;
+  }
+
+  // Clear existing db
+  photon_db_destroy(db);
+
+  db->dim = (size_t)header.dim;
+  db->dtype = (PhotonVectorType)header.dtype;
+  db->next_id = (size_t)header.next_id;
+  
+  if (header.count > 0) {
+    if (!ensure_capacity(db, (size_t)header.count)) {
+      hooks->fclose(f);
+      return -1;
+    }
+
+    // Load IDs
+    for (size_t i = 0; i < (size_t)header.count; i++) {
+      uint64_t id;
+      if (hooks->fread(&id, sizeof(uint64_t), 1, f) != 1) {
+        hooks->fclose(f);
+        return -1;
+      }
+      db->list_of_id[i] = (size_t)id;
+    }
+
+    // Load vector data
+    size_t element_size = get_element_size(db->dtype);
+    size_t vector_bytes = db->dim * element_size;
+    if (hooks->fread(db->data, vector_bytes, (size_t)header.count, f) != (size_t)header.count) {
+      hooks->fclose(f);
+      return -1;
+    }
+    db->count = (size_t)header.count;
+  }
+
+  hooks->fclose(f);
+  return 0;
+}
+
 void photon_db_create(const PhotonDBConfig *cfg, PhotonDB *out_db) {
   if (out_db == NULL) return;
   

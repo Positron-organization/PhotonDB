@@ -32,11 +32,11 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 
 ## `core/src/hooks.h` / `hooks.c`
 
-This module contains a **struct of function pointers** for platform-dependent operations such as memory allocation, memory management, and logging.
+This module contains a **struct of function pointers** for platform-dependent operations such as memory allocation, memory management, logging, and **file I/O**.
 
 ### Why does this exist?
 
-PhotonDB is built with a **multi-platform-first mindset**, abstracting OS-specific APIs so it can run on everything from bare-metal MCUs to full Linux systems.
+PhotonDB is built with a **multi-platform-first mindset**, abstracting OS-specific APIs (including filesystem access) so it can run on everything from bare-metal MCUs to full Linux systems.
 
 ---
 
@@ -47,6 +47,7 @@ This is the **core engine** of PhotonDB. It contains the main database logic, in
 * CRUD operations
 * internal database management
 * vector storage
+* **Persistence (Save/Load to .pdb files)**
 
 ---
 

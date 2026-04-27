@@ -8,7 +8,11 @@ static PhotonInitStruct h = {
     .memcpy = NULL,
     .memmove = NULL,
     .memset = NULL,
-    .log = NULL
+    .log = NULL,
+    .fopen = NULL,
+    .fwrite = NULL,
+    .fread = NULL,
+    .fclose = NULL
 };
 
 void photonInit(PhotonInitStruct init) {
