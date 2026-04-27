@@ -1,3 +1,6 @@
+#ifndef PHOTON_HOOKS_H
+#define PHOTON_HOOKS_H
+
 #include <stddef.h>
 
 typedef struct {
@@ -19,3 +22,5 @@ typedef struct {
 void photonInit(PhotonInitStruct init);
 
 PhotonInitStruct* photonGetInitStruct();
+
+#endif // PHOTON_HOOKS_H

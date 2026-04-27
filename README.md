@@ -128,8 +128,30 @@ zig build run_test
 ```
 The test runner automatically links against the static library and uses headers from `zig-out/include/`.
 
+### Quick Start Example
+To see PhotonDB in action, you can run the included basic usage example:
+```bash
+cd platform/linux
+zig build run_example
+```
+This example demonstrates initializing the database, inserting vectors, performing a similarity search, and saving the database to disk.
+
 ## Design Philosophy
 
 - **Multi-platform-first**: Instead of hardcoding OS APIs, PhotonDB uses a hook-based system to remain compatible with any environment.
 - **Surgical Updates**: Designed for stability and maintainable codebases.
 - **No Dependencies**: Focuses on standard C and explicit memory control.
+
+## Roadmap / TODO
+
+PhotonDB is under active development. The following features are planned:
+
+- [ ] **Advanced Indexing**: Implement HNSW (Hierarchical Navigable Small World) or IVF (Inverted File Index) for efficient Approximate Nearest Neighbor (ANN) search.
+- [ ] **Expanded Distance Metrics**: Add support for L2 (Euclidean) Distance and Cosine Similarity.
+- [ ] **Vector Quantization**: Implement Product Quantization (PQ) and Binary Quantization (BQ) to significantly reduce memory footprint.
+- [ ] **SIMD Acceleration**: Optimize core math operations with NEON (ARM) and AVX (x86) instructions.
+- [ ] **Metadata Filtering**: Support attaching metadata to vectors and filtering search results based on attributes.
+- [ ] **Enhanced Platform Support**: Provide official examples and drivers for ESP32, STM32, and other common MCUs.
+- [ ] **Concurrency & Thread Safety**: Implement thread-safe database operations and parallel search for multi-core embedded systems.
+- [ ] **Auto-Compaction**: Add logic to reclaim space from deleted vectors and optimize memory layout.
+- [ ] **C++ Wrappers**: Provide a modern C++20 header-only wrapper for easier integration in C++ projects.

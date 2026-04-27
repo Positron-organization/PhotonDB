@@ -1,3 +1,6 @@
+#ifndef PHOTON_VECTOR_H
+#define PHOTON_VECTOR_H
+
 #include <stddef.h>
 
 void photonVectorInit();
@@ -36,3 +39,5 @@ int photon_db_upsert(PhotonDB* db, size_t id, const void* in_vector);
 
 int photon_db_save(PhotonDB* db, const char* filename);
 int photon_db_load(PhotonDB* db, const char* filename);
+
+#endif // PHOTON_VECTOR_H
