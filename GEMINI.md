@@ -19,10 +19,13 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 │       ├── search.h
 │       ├── vector.c
 │       └── vector.h
-├── GEMINI.md
 ├── platform
 │   └── linux
 │       └── build.zig
+├── test
+│   └── src
+│       └── main.cpp
+├── GEMINI.md
 └── README.md
 ```
 
@@ -63,6 +66,9 @@ This module implements **vector search algorithms**. Currently, it provides:
 ## `platform/<platform>/`
 
 This directory contains the **build system and platform integration** for each supported target.
+Building the project (e.g., via `zig build`) generates artifacts in `zig-out/`:
+* `zig-out/lib/libPhotonCore.a`: The static library.
+* `zig-out/include/*.h`: The public header files.
 
 ---
 

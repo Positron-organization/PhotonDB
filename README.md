@@ -103,17 +103,30 @@ photon_db_destroy(&loaded_db);
 │       └── search.c/h  # Vector search algorithms
 ├── platform
 │   └── linux           # Linux build system (Zig)
+├── test
+│   └── src             # Test suite (C++)
 └── GEMINI.md           # Internal project guide
 ```
 
-## Building
+## Building & Testing
 
-PhotonDB uses the [Zig build system](https://ziglang.org/) for platform integrations. For Linux, you can build using:
+PhotonDB uses the [Zig build system](https://ziglang.org/) for platform integrations.
 
+### Build Library
 ```bash
 cd platform/linux
 zig build
 ```
+This generates:
+- `zig-out/lib/libPhotonCore.a`
+- `zig-out/include/` (header files)
+
+### Run Tests
+```bash
+cd platform/linux
+zig build run_test
+```
+The test runner automatically links against the static library and uses headers from `zig-out/include/`.
 
 ## Design Philosophy
 
