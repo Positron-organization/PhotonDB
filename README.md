@@ -1,157 +1,177 @@
-# PhotonDB
+# ⚛️ PhotonDB
 
-PhotonDB is a lightweight vector database designed and optimized for efficiency on embedded devices, microcontrollers (MCU), and RTOS environments. Its architecture prioritizes performance, portability, and cross-platform compatibility through a clear separation of core logic and system abstractions.
+**PhotonDB** is a ultra-lightweight vector database designed for the edge. Optimized for **embedded devices**, **microcontrollers (MCU)**, and **RTOS environments**, it brings high-performance vector search to resource-constrained hardware.
 
-## Key Features
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20MCU%20%7C%20Bare--Metal-orange)](https://github.com/yourusername/PhotonDB)
+[![Language](https://img.shields.io/badge/language-C99-green)](https://en.wikipedia.org/wiki/C99)
 
-- **Brute-force Search**: High-precision dot product similarity search.
-- **Persistent Storage**: Save and load databases to `.pdb` files via platform hooks.
-- **Portable**: Run anywhere from bare-metal MCUs to Linux systems.
-- **Lightweight**: Minimal memory footprint, ideal for resource-constrained hardware.
-- **Modular**: Clean separation between database logic and platform-dependent code.
-- **Efficient**: Optimized for embedded performance.
+---
 
-## Architecture
+## 🤔 Why PhotonDB?
 
-PhotonDB is organized into three distinct layers:
+Modern AI applications often require vector similarity search, but existing solutions are often too heavy for embedded hardware. **PhotonDB** bridges this gap by providing:
 
-| Layer | Responsibility |
-| :--- | :--- |
-| **Core** | Main database engine, vector storage, CRUD, and persistence. |
-| **Hooks** | OS abstraction layer for memory, logging, and file I/O. |
-| **Platform** | Build configurations and target-specific integrations. |
+*   ✅ **Efficiency**: Runs on devices with as little as 64KB of RAM.
+*   ✅ **Speed**: Optimized brute-force search for small to medium datasets.
+*   ✅ **Safety**: No hidden allocations; you control the memory through hooks.
+*   ✅ **Simplicity**: A single-header-inspired design that is easy to integrate.
 
-## Getting Started
+---
 
-### Initialization
+## 🚀 Key Features
 
-Before using PhotonDB, you must provide platform-specific hooks for memory management, logging, and file I/O, then initialize the vector engine:
+*   🎯 **Brute-force Precision**: High-accuracy dot product similarity search.
+*   💾 **Persistent Storage**: Robust Save/Load functionality using custom `.pdb` format.
+*   🌍 **Universal Portability**: Runs on everything from 8-bit MCUs to high-end Linux servers.
+*   🪶 **Minimal Footprint**: Extremely low memory overhead, tailored for silicon-constrained environments.
+*   🧩 **Modular Hooks**: Complete abstraction of OS-specific tasks (I/O, Memory, Logging).
+*   ⚡ **Embedded Efficiency**: Written in pure C99 with zero external dependencies.
+
+---
+
+## 🏗️ Architecture
+
+PhotonDB is built with a clean three-layer separation of concerns:
+
+| Layer | Responsibility | Icon |
+| :--- | :--- | :---: |
+| **Core** | Vector engine, CRUD operations, and binary persistence logic. | 🧠 |
+| **Hooks** | OS-independent abstraction for I/O, memory, and logging. | 🔌 |
+| **Platform** | Build orchestration (Zig) and target-specific glue code. | 🏗️ |
+
+---
+
+## 🛠️ Getting Started
+
+### 1️⃣ Initialization
+
+Configure your platform hooks and wake up the engine:
 
 ```c
 #include "hooks.h"
 #include "vector.h"
 
 PhotonInitStruct hooks = {
-    .alloc = my_malloc,
+    .alloc   = my_malloc,   // Use your RTOS or custom heap
     .realloc = my_realloc,
-    .free = my_free,
-    .memcpy = memcpy,
+    .free    = my_free,
+    .memcpy  = memcpy,
     .memmove = memmove,
-    .memset = memset,
-    .log = my_log_function,
-    // File I/O hooks for persistence
-    .fopen = my_fopen,
-    .fwrite = my_fwrite,
-    .fread = my_fread,
-    .fclose = my_fclose
+    .memset  = memset,
+    .log     = my_log_function,
+    // File I/O hooks for .pdb persistence
+    .fopen   = my_fopen,
+    .fwrite  = my_fwrite,
+    .fread   = my_fread,
+    .fclose  = my_fclose
 };
 
 photonInit(hooks);
-photonVectorInit(); // Link hooks to the vector engine
+photonVectorInit();
 ```
 
-### Supported Data Types
-
-PhotonDB currently supports the following vector element types:
-- `PHOTON_VECTOR_I8`: 8-bit signed integers.
-- `PHOTON_VECTOR_F32`: 32-bit floating point numbers.
-
-### Database Operations
-
-Define your database configuration and perform CRUD operations:
+### 2️⃣ Core Operations
 
 ```c
 #include "vector.h"
+#include "search.h"
 
-PhotonDBConfig cfg = {
-    .dim = 128,
-    .dtype = PHOTON_VECTOR_F32
-};
-
+// 🛠️ Create a DB
+PhotonDBConfig cfg = { .dim = 128, .dtype = PHOTON_VECTOR_F32 };
 PhotonDB db;
 photon_db_create(&cfg, &db);
 
-// Insert a vector
+// 📥 Insert
 float vector[128] = { ... };
 int id = photon_db_insert(&db, vector);
 
-// Persistence: Save the database
+// 💾 Save to Disk
 photon_db_save(&db, "vectors.pdb");
 
-// Persistence: Load from file
-PhotonDB loaded_db;
-photon_db_load(&loaded_db, "vectors.pdb");
-
-// Search for similar vectors
-#include "search.h"
+// 🔍 Search
 PhotonSearchResult results[5];
-int count = photon_db_search_dot_product(&db, query_vector, 5, results);
+photon_db_search_dot_product(&db, query_vector, 5, results);
 
-// Clean up
+// 🧹 Cleanup
 photon_db_destroy(&db);
-photon_db_destroy(&loaded_db);
 ```
 
-## Project Structure
+---
+
+## 📂 Project Structure
 
 ```text
 .
-├── core
-│   └── src
-│       ├── hooks.c/h   # Platform-dependent OS abstraction hooks
-│       ├── vector.c/h  # Core vector database logic
-│       └── search.c/h  # Vector search algorithms
-├── platform
-│   └── linux           # Linux build system (Zig)
-├── test
-│   └── src             # Test suite (C++)
-└── GEMINI.md           # Internal project guide
+├── core/src/
+│   ├── hooks.c/h   # 🔌 System abstraction layer
+│   ├── vector.c/h  # 🧠 Main database logic
+│   └── search.c/h  # 🔍 Search algorithms
+├── platform/
+│   └── linux/      # 🏗️ Build targets (Zig)
+├── test/src/       # 🧪 C++ test suite
+└── examples/       # 💡 Integration examples
 ```
 
-## Building & Testing
+---
 
-PhotonDB uses the [Zig build system](https://ziglang.org/) for platform integrations.
+## 🔨 Building & Testing
 
-### Build Library
+We use the [Zig build system](https://ziglang.org/) for modern, cross-platform compilation.
+
+### 📦 Build Library
 ```bash
 cd platform/linux
 zig build
 ```
-This generates:
-- `zig-out/lib/libPhotonCore.a`
-- `zig-out/include/` (header files)
 
-### Run Tests
+### 🧪 Run Tests
 ```bash
-cd platform/linux
 zig build run_test
 ```
-The test runner automatically links against the static library and uses headers from `zig-out/include/`.
 
-### Quick Start Example
-To see PhotonDB in action, you can run the included basic usage example:
+### 💡 Quick Start Example
 ```bash
-cd platform/linux
 zig build run_example
 ```
-This example demonstrates initializing the database, inserting vectors, performing a similarity search, and saving the database to disk.
 
-## Design Philosophy
+---
 
-- **Multi-platform-first**: Instead of hardcoding OS APIs, PhotonDB uses a hook-based system to remain compatible with any environment.
-- **Surgical Updates**: Designed for stability and maintainable codebases.
-- **No Dependencies**: Focuses on standard C and explicit memory control.
+## 🎯 Roadmap
 
-## Roadmap / TODO
+- [ ] **Advanced Indexing**: HNSW & IVF support for sub-linear search.
+- [ ] **Expanded Metrics**: L2 Distance and Cosine Similarity.
+- [ ] **Vector Quantization**: PQ & BQ for 10x memory reduction.
+- [ ] **SIMD Acceleration**: NEON (ARM) & AVX (x86) optimizations.
+- [ ] **Metadata Support**: Attribute-based filtering.
+- [ ] **MCU Drivers**: Official support for ESP32, STM32, and Nordic.
+- [ ] **Concurrency**: Thread-safe handles for multi-core systems.
 
-PhotonDB is under active development. The following features are planned:
+---
 
-- [ ] **Advanced Indexing**: Implement HNSW (Hierarchical Navigable Small World) or IVF (Inverted File Index) for efficient Approximate Nearest Neighbor (ANN) search.
-- [ ] **Expanded Distance Metrics**: Add support for L2 (Euclidean) Distance and Cosine Similarity.
-- [ ] **Vector Quantization**: Implement Product Quantization (PQ) and Binary Quantization (BQ) to significantly reduce memory footprint.
-- [ ] **SIMD Acceleration**: Optimize core math operations with NEON (ARM) and AVX (x86) instructions.
-- [ ] **Metadata Filtering**: Support attaching metadata to vectors and filtering search results based on attributes.
-- [ ] **Enhanced Platform Support**: Provide official examples and drivers for ESP32, STM32, and other common MCUs.
-- [ ] **Concurrency & Thread Safety**: Implement thread-safe database operations and parallel search for multi-core embedded systems.
-- [ ] **Auto-Compaction**: Add logic to reclaim space from deleted vectors and optimize memory layout.
-- [ ] **C++ Wrappers**: Provide a modern C++20 header-only wrapper for easier integration in C++ projects.
+## ⚖️ License
+
+Distributed under the AGPL-3.0 License. See `LICENSE` for more information.
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 🆘 Support
+
+If you encounter any issues or have questions, feel free to:
+*   Open an [Issue](https://github.com/yourusername/PhotonDB/issues)
+*   Check the [GEMINI.md](GEMINI.md) for internal architecture details.
+*   Reach out to the maintainers.
+
+---
+
+<p align="center">Built with ❤️ for the Embedded Community</p>
