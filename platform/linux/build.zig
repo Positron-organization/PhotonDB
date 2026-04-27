@@ -21,6 +21,12 @@ pub fn build(b: *std.Build) void {
         .flags = &.{"-std=c99"},
     });
 
+    mod.addCSourceFile(.{
+        .language = .c,
+        .file = b.path("../../core/src/search.c"),
+        .flags = &.{"-std=c99"},
+    });
+
     const lib = b.addLibrary(.{
         .name = "PhotonCore",
         .root_module = mod,

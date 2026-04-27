@@ -4,6 +4,7 @@ PhotonDB is a lightweight vector database designed and optimized for efficiency 
 
 ## Key Features
 
+- **Brute-force Search**: High-precision dot product similarity search.
 - **Portable**: Run anywhere from bare-metal MCUs to Linux systems.
 - **Lightweight**: Minimal memory footprint, ideal for resource-constrained hardware.
 - **Modular**: Clean separation between database logic and platform-dependent code.
@@ -72,6 +73,11 @@ int id = photon_db_insert(&db, vector);
 float out_vector[128];
 photon_db_get(&db, id, out_vector);
 
+// Search for similar vectors
+#include "search.h"
+PhotonSearchResult results[5];
+int count = photon_db_search_dot_product(&db, query_vector, 5, results);
+
 // Clean up
 photon_db_destroy(&db);
 ```
@@ -83,7 +89,8 @@ photon_db_destroy(&db);
 ├── core
 │   └── src
 │       ├── hooks.c/h   # Platform-dependent OS abstraction hooks
-│       └── vector.c/h  # Core vector database logic
+│       ├── vector.c/h  # Core vector database logic
+│       └── search.c/h  # Vector search algorithms
 ├── platform
 │   └── linux           # Linux build system (Zig)
 └── GEMINI.md           # Internal project guide

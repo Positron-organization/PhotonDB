@@ -15,6 +15,8 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 │   └── src
 │       ├── hooks.c
 │       ├── hooks.h
+│       ├── search.c
+│       ├── search.h
 │       ├── vector.c
 │       └── vector.h
 ├── GEMINI.md
@@ -30,57 +32,36 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 
 ## `core/src/hooks.h` / `hooks.c`
 
-This module contains a **struct of function pointers** for platform-dependent operations such as:
-
-* memory allocation (`alloc`)
-* memory reallocation (`realloc`)
-* memory free (`free`)
-* logging
-* other low-level system hooks
+This module contains a **struct of function pointers** for platform-dependent operations such as memory allocation, memory management, and logging.
 
 ### Why does this exist?
 
-PhotonDB is built with a **multi-platform-first mindset**.
-
-Instead of hardcoding OS-specific APIs, PhotonDB abstracts them through hooks so it can run on:
-
-* Linux systems
-* Microcontrollers (MCU)
-* RTOS environments
-* Bare-metal systems
-* Other custom platforms
+PhotonDB is built with a **multi-platform-first mindset**, abstracting OS-specific APIs so it can run on everything from bare-metal MCUs to full Linux systems.
 
 ---
 
 ## `core/src/vector.h` / `vector.c`
 
-This is the **core engine** of PhotonDB.
-
-It contains the main database logic, such as:
+This is the **core engine** of PhotonDB. It contains the main database logic, including:
 
 * CRUD operations
-* vector storage
-* indexing
-* search logic
 * internal database management
+* vector storage
 
-This is where PhotonDB’s main functionality lives.
+---
+
+## `core/src/search.h` / `search.c`
+
+This module implements **vector search algorithms**. Currently, it provides:
+
+* Brute-force dot product search
+* Top-K result filtering
 
 ---
 
 ## `platform/<platform>/`
 
 This directory contains the **build system and platform integration** for each supported target.
-
-Each platform can have its own build configuration.
-
-### Example
-
-```text
-platform/linux/build.zig
-```
-
-Used to build PhotonDB for Linux with Zig build system.
 
 ---
 
@@ -102,9 +83,8 @@ PhotonDB separates:
 
 | Layer    | Responsibility             |
 | -------- | -------------------------- |
-| Core     | Database logic             |
+| Core     | Database logic & Search    |
 | Hooks    | OS abstraction             |
 | Platform | Build + target integration |
 
 This allows PhotonDB to scale from tiny MCUs to full Linux systems with minimal changes.
-
