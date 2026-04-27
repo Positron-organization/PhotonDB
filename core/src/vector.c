@@ -34,6 +34,34 @@ static int are_file_hooks_valid() {
           hooks->fclose != NULL);
 }
 
+static int ensure_capacity(PhotonDB *db, size_t min_capacity) {
+  if (db == NULL || !is_hooks_valid()) return 0;
+  if (db->capacity >= min_capacity) return 1;
+
+  size_t new_capacity = db->capacity == 0 ? 8 : db->capacity * 2;
+  if (new_capacity < db->capacity) return 0; // Overflow
+  while (new_capacity < min_capacity) {
+    size_t prev = new_capacity;
+    new_capacity *= 2;
+    if (new_capacity < prev) return 0; // Overflow
+  }
+
+  size_t element_size = get_element_size(db->dtype);
+  if (element_size == 0) return 0;
+
+  size_t vector_bytes = db->dim * element_size;
+  void *new_data = hooks->realloc(db->data, new_capacity * vector_bytes);
+  if (new_data == NULL) return 0;
+  db->data = new_data;
+
+  size_t *new_ids = (size_t *)hooks->realloc(db->list_of_id, new_capacity * sizeof(size_t));
+  if (new_ids == NULL) return 0;
+  db->list_of_id = new_ids;
+
+  db->capacity = new_capacity;
+  return 1;
+}
+
 typedef struct {
   char magic[4];
   uint32_t version;
@@ -64,9 +92,6 @@ int photon_db_save(PhotonDB *db, const char *filename) {
 
   if (db->count > 0) {
     // Save list of IDs
-    // Since size_t might be 32-bit or 64-bit, we should probably save them as uint64_t for portability
-    // But for simplicity and matching the struct, let's see. 
-    // To be safe, let's write them one by one as uint64_t or use a buffer.
     for (size_t i = 0; i < db->count; i++) {
       uint64_t id = (uint64_t)db->list_of_id[i];
       if (hooks->fwrite(&id, sizeof(uint64_t), 1, f) != 1) {
@@ -181,34 +206,6 @@ void photon_db_destroy(PhotonDB *db) {
 
   hooks->memset(db, 0, sizeof(PhotonDB));
   db->dtype = PHOTON_VECTOR_NONE;
-}
-
-static int ensure_capacity(PhotonDB *db, size_t min_capacity) {
-  if (db == NULL || !is_hooks_valid()) return 0;
-  if (db->capacity >= min_capacity) return 1;
-
-  size_t new_capacity = db->capacity == 0 ? 8 : db->capacity * 2;
-  if (new_capacity < db->capacity) return 0; // Overflow
-  while (new_capacity < min_capacity) {
-    size_t prev = new_capacity;
-    new_capacity *= 2;
-    if (new_capacity < prev) return 0; // Overflow
-  }
-
-  size_t element_size = get_element_size(db->dtype);
-  if (element_size == 0) return 0;
-
-  size_t vector_bytes = db->dim * element_size;
-  void *new_data = hooks->realloc(db->data, new_capacity * vector_bytes);
-  if (new_data == NULL) return 0;
-  db->data = new_data;
-
-  size_t *new_ids = (size_t *)hooks->realloc(db->list_of_id, new_capacity * sizeof(size_t));
-  if (new_ids == NULL) return 0;
-  db->list_of_id = new_ids;
-
-  db->capacity = new_capacity;
-  return 1;
 }
 
 int photon_db_insert(PhotonDB *db, const void *in_vector) {
