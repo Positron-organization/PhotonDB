@@ -3,7 +3,7 @@
 **PhotonDB** is a ultra-lightweight vector database designed for the edge. Optimized for **embedded devices**, **microcontrollers (MCU)**, and **RTOS environments**, it brings high-performance vector search to resource-constrained hardware.
 
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20MCU%20%7C%20Bare--Metal-orange)](https://github.com/yourusername/PhotonDB)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20MCU%20%7C%20Bare--Metal-orange)](https://github.com/Positron-organization/PhotonDB)
 [![Language](https://img.shields.io/badge/language-C99-green)](https://en.wikipedia.org/wiki/C99)
 
 ---
@@ -52,11 +52,10 @@ If you are running on a standard Linux or POSIX system, you can use the built-in
 
 ```c
 #include "photon_posix.h"
+#include "vector.h"
 
 // ...
 photonInit(photon_get_posix_init_struct());
-```
-
 photonVectorInit();
 ```
 
@@ -192,7 +191,7 @@ Contributions are what make the open source community such an amazing place to l
 ## 🆘 Support
 
 If you encounter any issues or have questions, feel free to:
-*   Open an [Issue](https://github.com/yourusername/PhotonDB/issues)
+*   Open an [Issue](https://github.com/Positron-organization/PhotonDB/issues)
 *   Check the [GEMINI.md](GEMINI.md) for internal architecture details.
 *   Reach out to the maintainers.
 
