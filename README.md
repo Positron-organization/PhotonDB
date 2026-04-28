@@ -22,6 +22,7 @@ Modern AI applications often require vector similarity search, but existing solu
 ## 🚀 Key Features
 
 *   🎯 **Brute-force Precision**: High-accuracy dot product similarity search.
+*   ⚡ **SIMD Accelerated**: Hardware-accelerated search using SSE, AVX, AVX2 (x86), NEON (ARM), and RVV (RISC-V).
 *   💾 **Persistent Storage**: Robust Save/Load functionality using custom `.pdb` format.
 *   🌍 **Universal Portability**: Runs on everything from 8-bit MCUs to high-end Linux servers.
 *   🪶 **Minimal Footprint**: Extremely low memory overhead, tailored for silicon-constrained environments.
@@ -168,7 +169,7 @@ zig build run_example -Dexample=bulk_operations
 - [ ] **Advanced Indexing**: HNSW & IVF support for sub-linear search.
 - [x] **Expanded Metrics**: L2 Distance and Cosine Similarity.
 - [ ] **Vector Quantization**: PQ & BQ for 10x memory reduction.
-- [ ] **SIMD Acceleration**: NEON (ARM) & AVX (x86) optimizations.
+- [x] **SIMD Acceleration**: NEON (ARM) & AVX (x86) optimizations.
 - [ ] **Metadata Support**: Attribute-based filtering.
 - [ ] **MCU Drivers**: Official support for ESP32, STM32, and Nordic.
 - [ ] **Concurrency**: Thread-safe handles for multi-core systems.

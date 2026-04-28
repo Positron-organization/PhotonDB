@@ -56,6 +56,10 @@
     #define PHOTON_HAVE_NEON
 #endif
 
+#if defined(__riscv_vector)
+    #define PHOTON_HAVE_RVV
+#endif
+
 /* --- Runtime Detection API --- */
 
 typedef struct {
@@ -67,6 +71,7 @@ typedef struct {
         bool has_avx;
         bool has_avx2;
         bool has_neon;
+        bool has_rvv;
     } simd;
 } PhotonEnvInfo;
 

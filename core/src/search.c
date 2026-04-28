@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "search.h"
 #include "hooks.h"
+#include "simd.h"
 
 /* --- Internal Math Helpers --- */
 
@@ -12,40 +13,6 @@ static float photon_sqrtf(float x) {
         z = 0.5f * (z + x / z);
     }
     return z;
-}
-
-static float dot_product_f32(const float* a, const float* b, size_t dim) {
-  float sum = 0.0f;
-  for (size_t i = 0; i < dim; i++) {
-    sum += a[i] * b[i];
-  }
-  return sum;
-}
-
-static float dot_product_i8(const int8_t* a, const int8_t* b, size_t dim) {
-  int32_t sum = 0;
-  for (size_t i = 0; i < dim; i++) {
-    sum += (int32_t)a[i] * (int32_t)b[i];
-  }
-  return (float)sum;
-}
-
-static float l2_distance_sq_f32(const float* a, const float* b, size_t dim) {
-    float sum = 0.0f;
-    for (size_t i = 0; i < dim; i++) {
-        float diff = a[i] - b[i];
-        sum += diff * diff;
-    }
-    return sum;
-}
-
-static float l2_distance_sq_i8(const int8_t* a, const int8_t* b, size_t dim) {
-    uint32_t sum = 0;
-    for (size_t i = 0; i < dim; i++) {
-        int32_t diff = (int32_t)a[i] - (int32_t)b[i];
-        sum += (uint32_t)(diff * diff);
-    }
-    return (float)sum;
 }
 
 /* --- Top-K Management --- */
@@ -92,9 +59,9 @@ int photon_db_search_dot_product(PhotonDB* db, const void* query_vector, size_t 
         void* current_vector = (uint8_t*)db->data + (i * vector_bytes);
         
         if (db->dtype == PHOTON_VECTOR_F32) {
-            score = dot_product_f32((const float*)query_vector, (const float*)current_vector, db->dim);
+            score = photon_dot_product_f32_simd((const float*)query_vector, (const float*)current_vector, db->dim);
         } else {
-            score = dot_product_i8((const int8_t*)query_vector, (const int8_t*)current_vector, db->dim);
+            score = photon_dot_product_i8_simd((const int8_t*)query_vector, (const int8_t*)current_vector, db->dim);
         }
 
         insert_result(results, &found, k, db->list_of_id[i], score, false);
@@ -115,9 +82,9 @@ int photon_db_search_l2_distance(PhotonDB* db, const void* query_vector, size_t 
         void* current_vector = (uint8_t*)db->data + (i * vector_bytes);
         
         if (db->dtype == PHOTON_VECTOR_F32) {
-            score = l2_distance_sq_f32((const float*)query_vector, (const float*)current_vector, db->dim);
+            score = photon_l2_distance_sq_f32_simd((const float*)query_vector, (const float*)current_vector, db->dim);
         } else {
-            score = l2_distance_sq_i8((const int8_t*)query_vector, (const int8_t*)current_vector, db->dim);
+            score = photon_l2_distance_sq_i8_simd((const int8_t*)query_vector, (const int8_t*)current_vector, db->dim);
         }
         
         /* We return actual distance, not squared, for clarity if possible, but squared is fine too */
@@ -138,9 +105,9 @@ int photon_db_search_cosine_similarity(PhotonDB* db, const void* query_vector, s
 
     float query_norm_sq = 0.0f;
     if (db->dtype == PHOTON_VECTOR_F32) {
-        query_norm_sq = dot_product_f32((const float*)query_vector, (const float*)query_vector, db->dim);
+        query_norm_sq = photon_dot_product_f32_simd((const float*)query_vector, (const float*)query_vector, db->dim);
     } else {
-        query_norm_sq = dot_product_i8((const int8_t*)query_vector, (const int8_t*)query_vector, db->dim);
+        query_norm_sq = photon_dot_product_i8_simd((const int8_t*)query_vector, (const int8_t*)query_vector, db->dim);
     }
     float query_norm = photon_sqrtf(query_norm_sq);
 
@@ -152,11 +119,11 @@ int photon_db_search_cosine_similarity(PhotonDB* db, const void* query_vector, s
         float current_norm_sq = 0.0f;
 
         if (db->dtype == PHOTON_VECTOR_F32) {
-            dot = dot_product_f32((const float*)query_vector, (const float*)current_vector, db->dim);
-            current_norm_sq = dot_product_f32((const float*)current_vector, (const float*)current_vector, db->dim);
+            dot = photon_dot_product_f32_simd((const float*)query_vector, (const float*)current_vector, db->dim);
+            current_norm_sq = photon_dot_product_f32_simd((const float*)current_vector, (const float*)current_vector, db->dim);
         } else {
-            dot = dot_product_i8((const int8_t*)query_vector, (const int8_t*)current_vector, db->dim);
-            current_norm_sq = dot_product_i8((const int8_t*)current_vector, (const int8_t*)current_vector, db->dim);
+            dot = photon_dot_product_i8_simd((const int8_t*)query_vector, (const int8_t*)current_vector, db->dim);
+            current_norm_sq = photon_dot_product_i8_simd((const int8_t*)current_vector, (const int8_t*)current_vector, db->dim);
         }
 
         float current_norm = photon_sqrtf(current_norm_sq);

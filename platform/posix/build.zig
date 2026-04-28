@@ -38,6 +38,12 @@ pub fn build(b: *std.Build) void {
 
     mod.addCSourceFile(.{
         .language = .c,
+        .file = b.path("../../core/src/simd.c"),
+        .flags = &.{"-std=c99"},
+    });
+
+    mod.addCSourceFile(.{
+        .language = .c,
         .file = b.path("photon_posix.c"),
         .flags = &.{"-std=c99"},
     });
@@ -52,6 +58,7 @@ pub fn build(b: *std.Build) void {
     b.installFile("../../core/src/detect.h", "include/detect.h");
     b.installFile("../../core/src/vector.h", "include/vector.h");
     b.installFile("../../core/src/search.h", "include/search.h");
+    b.installFile("../../core/src/simd.h", "include/simd.h");
     b.installFile("photon_posix.h", "include/photon_posix.h");
 
     b.installArtifact(lib);
@@ -92,6 +99,11 @@ pub fn build(b: *std.Build) void {
     test_exe.root_module.addCSourceFile(.{
         .language = .c,
         .file = b.path("../../core/src/search.c"),
+        .flags = &.{"-std=c99"},
+    });
+    test_exe.root_module.addCSourceFile(.{
+        .language = .c,
+        .file = b.path("../../core/src/simd.c"),
         .flags = &.{"-std=c99"},
     });
     test_exe.root_module.addCSourceFile(.{
@@ -144,6 +156,11 @@ pub fn build(b: *std.Build) void {
     example_exe.root_module.addCSourceFile(.{
         .language = .c,
         .file = b.path("../../core/src/search.c"),
+        .flags = &.{"-std=c99"},
+    });
+    example_exe.root_module.addCSourceFile(.{
+        .language = .c,
+        .file = b.path("../../core/src/simd.c"),
         .flags = &.{"-std=c99"},
     });
     example_exe.root_module.addCSourceFile(.{

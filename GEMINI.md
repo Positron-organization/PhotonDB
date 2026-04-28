@@ -19,6 +19,8 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 │       ├── hooks.h
 │       ├── search.c
 │       ├── search.h
+│       ├── simd.c
+│       ├── simd.h
 │       ├── vector.c
 │       └── vector.h
 ├── examples
@@ -48,7 +50,7 @@ This module provides **compile-time and runtime environment detection**. It iden
 *   **Operating System**: Linux, Windows, macOS, FreeRTOS, etc.
 *   **Architecture**: x86, x64, ARM, RISC-V.
 *   **Device Class**: Detects if the target is an embedded MCU.
-*   **SIMD Support**: Identifies availability of SSE, AVX, and NEON.
+*   **SIMD Support**: Identifies availability of SSE, AVX, NEON, and RVV.
 
 ---
 
@@ -81,6 +83,16 @@ This module implements **vector search algorithms**. It currently supports:
 * **Euclidean (L2) Distance**: Distance-based similarity (lower is better).
 * **Cosine Similarity**: Angular similarity between vectors.
 * **Top-K filtering**: Efficient result ranking for all metrics.
+
+---
+
+## `core/src/simd.h` / `simd.c`
+
+This module provides **SIMD-accelerated** implementations for core mathematical operations used in search.
+*   **x86 Support**: SSE2, AVX, AVX2.
+*   **ARM Support**: NEON.
+*   **RISC-V Support**: RVV (Vector Extension).
+*   **Automatic Fallback**: Gracefully falls back to scalar implementations if SIMD is not supported or detected.
 
 ---
 

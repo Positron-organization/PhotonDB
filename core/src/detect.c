@@ -64,6 +64,12 @@ void photon_get_env_info(PhotonEnvInfo* info) {
 #else
     info->simd.has_neon = false;
 #endif
+
+#if defined(PHOTON_HAVE_RVV)
+    info->simd.has_rvv = true;
+#else
+    info->simd.has_rvv = false;
+#endif
 }
 
 void photon_log_env_info(void) {
@@ -81,5 +87,6 @@ void photon_log_env_info(void) {
     if (info.simd.has_avx)  hooks->log("SIMD: AVX detected");
     if (info.simd.has_avx2) hooks->log("SIMD: AVX2 detected");
     if (info.simd.has_neon) hooks->log("SIMD: NEON detected");
+    if (info.simd.has_rvv)  hooks->log("SIMD: RISC-V Vector detected");
     hooks->log("---------------------------------");
 }
