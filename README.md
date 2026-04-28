@@ -166,7 +166,7 @@ zig build run_example -Dexample=bulk_operations
 ## 🎯 Roadmap
 
 - [ ] **Advanced Indexing**: HNSW & IVF support for sub-linear search.
-- [ ] **Expanded Metrics**: L2 Distance and Cosine Similarity.
+- [x] **Expanded Metrics**: L2 Distance and Cosine Similarity.
 - [ ] **Vector Quantization**: PQ & BQ for 10x memory reduction.
 - [ ] **SIMD Acceleration**: NEON (ARM) & AVX (x86) optimizations.
 - [ ] **Metadata Support**: Attribute-based filtering.

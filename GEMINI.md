@@ -13,6 +13,8 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 .
 ├── core
 │   └── src
+│       ├── detect.c
+│       ├── detect.h
 │       ├── hooks.c
 │       ├── hooks.h
 │       ├── search.c
@@ -73,10 +75,12 @@ This is the **core engine** of PhotonDB. It contains the main database logic, in
 
 ## `core/src/search.h` / `search.c`
 
-This module implements **vector search algorithms**. Currently, it provides:
+This module implements **vector search algorithms**. It currently supports:
 
-* Brute-force dot product search
-* Top-K result filtering
+* **Dot Product**: Direct similarity calculation.
+* **Euclidean (L2) Distance**: Distance-based similarity (lower is better).
+* **Cosine Similarity**: Angular similarity between vectors.
+* **Top-K filtering**: Efficient result ranking for all metrics.
 
 ---
 
