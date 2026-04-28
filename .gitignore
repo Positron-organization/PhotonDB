@@ -1,6 +1,17 @@
-platform/linux/zig-out/
-platform/linux/.zig-cache/
-platform/linux/test.pdb
-platform/linux/example.pdb
-platform/linux/linux_default_demo.pdb
-platform/linux/test_interactive.pdb
+# Zig artifacts
+.zig-cache/
+zig-out/
+platform/posix/.zig-cache/
+platform/posix/zig-out/
+
+# PhotonDB database files
+*.pdb
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Other
+*.o
+*.a
+*.so
