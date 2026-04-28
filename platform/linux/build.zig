@@ -79,9 +79,12 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("run_test", "Run the project tests");
     test_step.dependOn(&run_test_cmd.step);
 
-    // Example runner
+    const example_name = b.option([]const u8, "example", "The name of the example to run (folder in examples/)") orelse "basic_usage";
+    const example_folder = b.fmt("../../examples/{s}", .{example_name});
+    const example_source = b.fmt("{s}/main.c", .{example_folder});
+
     const example_exe = b.addExecutable(.{
-        .name = "photon_example",
+        .name = b.fmt("photon_example_{s}", .{example_name}),
         .root_module = b.createModule(.{
             .target = target,
             .optimize = optimize,
@@ -91,7 +94,7 @@ pub fn build(b: *std.Build) void {
 
     example_exe.root_module.addIncludePath(b.path("zig-out/include"));
     example_exe.root_module.addCSourceFile(.{
-        .file = b.path("../../examples/basic_usage.c"),
+        .file = b.path(example_source),
         .flags = &.{"-std=c99"},
     });
 
@@ -115,6 +118,6 @@ pub fn build(b: *std.Build) void {
     const run_example_cmd = b.addRunArtifact(example_exe);
     run_example_cmd.step.dependOn(b.getInstallStep());
 
-    const example_step = b.step("run_example", "Run the basic usage example");
+    const example_step = b.step("run_example", "Run an example (use -Dexample=<name>, default: basic_usage)");
     example_step.dependOn(&run_example_cmd.step);
 }

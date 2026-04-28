@@ -130,9 +130,17 @@ zig build
 zig build run_test
 ```
 
-### 💡 Quick Start Example
+### 💡 Run Examples
+PhotonDB comes with several examples to help you get started.
+
 ```bash
+cd platform/linux
+# Run the default (basic_usage) example
 zig build run_example
+
+# Run a specific example
+zig build run_example -Dexample=persistence
+zig build run_example -Dexample=bulk_operations
 ```
 
 ---

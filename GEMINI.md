@@ -19,6 +19,10 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 │       ├── search.h
 │       ├── vector.c
 │       └── vector.h
+├── examples
+│   ├── basic_usage
+│   ├── persistence
+│   └── bulk_operations
 ├── platform
 │   └── linux
 │       └── build.zig
@@ -69,6 +73,19 @@ This directory contains the **build system and platform integration** for each s
 Building the project (e.g., via `zig build`) generates artifacts in `zig-out/`:
 * `zig-out/lib/libPhotonCore.a`: The static library.
 * `zig-out/include/*.h`: The public header files.
+
+### Running Examples
+
+Examples can be run using the Zig build system from the `platform/linux` directory:
+
+```bash
+zig build run_example -Dexample=<example_folder_name>
+```
+
+Available examples:
+- `basic_usage`: General CRUD and search operations.
+- `persistence`: Demonstrates saving and loading databases.
+- `bulk_operations`: Demonstrates handling larger datasets and deletions.
 
 ---
 
