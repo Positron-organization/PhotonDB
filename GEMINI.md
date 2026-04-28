@@ -22,10 +22,13 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 ├── examples
 │   ├── basic_usage
 │   ├── persistence
-│   └── bulk_operations
+│   ├── bulk_operations
+│   └── linux_default
 ├── platform
 │   └── linux
-│       └── build.zig
+│       ├── build.zig
+│       ├── photon_linux.c
+│       └── photon_linux.h
 ├── test
 │   └── src
 │       └── main.cpp
@@ -67,9 +70,29 @@ This module implements **vector search algorithms**. Currently, it provides:
 
 ---
 
+## `test/src/main.cpp`
+
+This is an **interactive C++ test runner**. It provides a CLI menu to execute various test scenarios:
+*   **Basic CRUD**: Validates insertion, retrieval, and deletion.
+*   **Persistence**: Verifies saving and loading databases to `.pdb` files.
+*   **Search**: Tests the accuracy of the vector search algorithms.
+*   **Benchmark**: Measures performance for high-volume operations.
+
+Run it using:
+```bash
+zig build run_test
+```
+
+---
+
 ## `platform/<platform>/`
 
 This directory contains the **build system and platform integration** for each supported target.
+
+### Linux Implementation (`photon_linux.h` / `photon_linux.c`)
+
+For Linux/POSIX systems, a default `PhotonInitStruct` is provided that uses standard C library functions (`malloc`, `free`, `fopen`, etc.). This allows for quick integration on standard operating systems.
+
 Building the project (e.g., via `zig build`) generates artifacts in `zig-out/`:
 * `zig-out/lib/libPhotonCore.a`: The static library.
 * `zig-out/include/*.h`: The public header files.
@@ -86,6 +109,7 @@ Available examples:
 - `basic_usage`: General CRUD and search operations.
 - `persistence`: Demonstrates saving and loading databases.
 - `bulk_operations`: Demonstrates handling larger datasets and deletions.
+- `linux_default`: Demonstrates using the built-in Linux default configuration.
 
 ---
 

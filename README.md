@@ -46,7 +46,21 @@ PhotonDB is built with a clean three-layer separation of concerns:
 
 ### 1️⃣ Initialization
 
-Configure your platform hooks and wake up the engine:
+Configure your platform hooks and wake up the engine.
+
+#### **Option A: Linux/POSIX (Standard C Library)**
+If you are running on a standard Linux or POSIX system, you can use the built-in default configuration:
+
+```c
+#include "photon_linux.h"
+#include "vector.h"
+
+photonInit(photon_get_linux_init_struct());
+photonVectorInit();
+```
+
+#### **Option B: Manual Configuration (RTOS/MCU)**
+For embedded environments where you want to control every detail:
 
 ```c
 #include "hooks.h"
@@ -126,6 +140,7 @@ zig build
 ```
 
 ### 🧪 Run Tests
+The test suite is interactive. Run it and follow the on-screen menu to execute specific tests or benchmarks.
 ```bash
 zig build run_test
 ```

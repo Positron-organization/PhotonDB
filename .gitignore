@@ -2,3 +2,5 @@ platform/linux/zig-out/
 platform/linux/.zig-cache/
 platform/linux/test.pdb
 platform/linux/example.pdb
+platform/linux/linux_default_demo.pdb
+platform/linux/test_interactive.pdb

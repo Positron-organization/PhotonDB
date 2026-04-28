@@ -7,7 +7,10 @@ pub fn build(b: *std.Build) void {
     const mod = b.createModule(.{
         .target = target,
         .optimize = optimize,
+        .link_libc = true,
     });
+
+    mod.addIncludePath(b.path("../../core/src"));
 
     mod.addCSourceFile(.{
         .language = .c,
@@ -27,6 +30,12 @@ pub fn build(b: *std.Build) void {
         .flags = &.{"-std=c99"},
     });
 
+    mod.addCSourceFile(.{
+        .language = .c,
+        .file = b.path("photon_linux.c"),
+        .flags = &.{"-std=c99"},
+    });
+
     const lib = b.addLibrary(.{
         .name = "PhotonCore",
         .root_module = mod,
@@ -36,6 +45,7 @@ pub fn build(b: *std.Build) void {
     b.installFile("../../core/src/hooks.h", "include/hooks.h");
     b.installFile("../../core/src/vector.h", "include/vector.h");
     b.installFile("../../core/src/search.h", "include/search.h");
+    b.installFile("photon_linux.h", "include/photon_linux.h");
 
     b.installArtifact(lib);
 
@@ -70,6 +80,11 @@ pub fn build(b: *std.Build) void {
     test_exe.root_module.addCSourceFile(.{
         .language = .c,
         .file = b.path("../../core/src/search.c"),
+        .flags = &.{"-std=c99"},
+    });
+    test_exe.root_module.addCSourceFile(.{
+        .language = .c,
+        .file = b.path("photon_linux.c"),
         .flags = &.{"-std=c99"},
     });
 
@@ -112,6 +127,11 @@ pub fn build(b: *std.Build) void {
     example_exe.root_module.addCSourceFile(.{
         .language = .c,
         .file = b.path("../../core/src/search.c"),
+        .flags = &.{"-std=c99"},
+    });
+    example_exe.root_module.addCSourceFile(.{
+        .language = .c,
+        .file = b.path("photon_linux.c"),
         .flags = &.{"-std=c99"},
     });
 
