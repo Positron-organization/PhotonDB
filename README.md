@@ -53,10 +53,12 @@ If you are running on a standard Linux or POSIX system, you can use the built-in
 ```c
 #include "photon_posix.h"
 #include "vector.h"
+#include "detect.h"
 
 // ...
 photonInit(photon_get_posix_init_struct());
 photonVectorInit();
+photonDetectInit();
 ```
 
 #### **Option B: Manual Configuration (RTOS/MCU)**
@@ -119,6 +121,7 @@ photon_db_destroy(&db);
 .
 ├── core/src/
 │   ├── hooks.c/h   # 🔌 System abstraction layer
+│   ├── detect.c/h  # 🔍 Environment detection
 │   ├── vector.c/h  # 🧠 Main database logic
 │   └── search.c/h  # 🔍 Search algorithms
 ├── platform/
@@ -198,3 +201,4 @@ If you encounter any issues or have questions, feel free to:
 ---
 
 <p align="center">Built with ❤️ for the Embedded Community</p>
+❤️ for the Embedded Community</p>

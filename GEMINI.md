@@ -40,6 +40,16 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 
 ## Directory Overview
 
+## `core/src/detect.h` / `detect.c`
+
+This module provides **compile-time and runtime environment detection**. It identifies:
+*   **Operating System**: Linux, Windows, macOS, FreeRTOS, etc.
+*   **Architecture**: x86, x64, ARM, RISC-V.
+*   **Device Class**: Detects if the target is an embedded MCU.
+*   **SIMD Support**: Identifies availability of SSE, AVX, and NEON.
+
+---
+
 ## `core/src/hooks.h` / `hooks.c`
 
 This module contains a **struct of function pointers** for platform-dependent operations such as memory allocation, memory management, logging, and **file I/O**.
