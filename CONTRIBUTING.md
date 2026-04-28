@@ -20,10 +20,10 @@ Thank you for your interest in contributing to PhotonDB! We welcome contribution
 
 ## Build & Test
 
-We use the Zig build system for development on Linux.
+We use the Zig build system for development on POSIX-compliant systems (Linux, macOS, etc.).
 
 ```bash
-cd platform/linux
+cd platform/posix
 # Build the library
 zig build
 # Run tests

@@ -47,15 +47,16 @@ PhotonDB is built with a clean three-layer separation of concerns:
 ### 1️⃣ Initialization
 
 Configure your platform hooks and wake up the engine.
-
-#### **Option A: Linux/POSIX (Standard C Library)**
+#### **Option A: POSIX (Standard C Library)**
 If you are running on a standard Linux or POSIX system, you can use the built-in default configuration:
 
 ```c
-#include "photon_linux.h"
-#include "vector.h"
+#include "photon_posix.h"
 
-photonInit(photon_get_linux_init_struct());
+// ...
+photonInit(photon_get_posix_init_struct());
+```
+
 photonVectorInit();
 ```
 
@@ -122,7 +123,7 @@ photon_db_destroy(&db);
 │   ├── vector.c/h  # 🧠 Main database logic
 │   └── search.c/h  # 🔍 Search algorithms
 ├── platform/
-│   └── linux/      # 🏗️ Build targets (Zig)
+│   └── posix/      # 🏗️ Build targets (Zig)
 ├── test/src/       # 🧪 C++ test suite
 └── examples/       # 💡 Integration examples
 ```
@@ -135,7 +136,7 @@ We use the [Zig build system](https://ziglang.org/) for modern, cross-platform c
 
 ### 📦 Build Library
 ```bash
-cd platform/linux
+cd platform/posix
 zig build
 ```
 
@@ -149,7 +150,7 @@ zig build run_test
 PhotonDB comes with several examples to help you get started.
 
 ```bash
-cd platform/linux
+cd platform/posix
 # Run the default (basic_usage) example
 zig build run_example
 

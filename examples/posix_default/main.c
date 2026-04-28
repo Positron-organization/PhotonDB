@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include "hooks.h"
 #include "vector.h"
-#include "photon_linux.h"
+#include "photon_posix.h"
 
 int main() {
-    // Initialize PhotonDB with Linux default hooks
-    PhotonInitStruct hooks = photon_get_linux_init_struct();
+    // Initialize PhotonDB with POSIX default hooks
+    PhotonInitStruct hooks = photon_get_posix_init_struct();
     photonInit(hooks);
     photonVectorInit();
 
-    printf("PhotonDB initialized with Linux default config!\n");
+    printf("PhotonDB initialized with POSIX default config!\n");
 
     // Create a database
     PhotonDBConfig cfg = {
@@ -27,7 +27,7 @@ int main() {
     printf("Inserted vector with ID: %d\n", id1);
 
     // Save the database
-    const char* filename = "linux_default_demo.pdb";
+    const char* filename = "posix_default_demo.pdb";
     if (photon_db_save(&db, filename) == 0) {
         printf("Database saved to %s\n", filename);
     } else {

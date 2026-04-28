@@ -1,0 +1,41 @@
+
+// 🧹 Cleanup
+photon_db_destroy(&db);
+```
+
+---
+
+## 📂 Project Structure
+
+```text
+.
+├── core/src/
+│   ├── hooks.c/h   # 🔌 System abstraction layer
+│   ├── vector.c/h  # 🧠 Main database logic
+│   └── search.c/h  # 🔍 Search algorithms
+├── platform/
+│   └── posix/      # 🏗️ Build targets (Zig)
+├── test/src/       # 🧪 C++ test suite
+└── examples/       # 💡 Integration examples
+```
+
+---
+
+## 🔨 Building & Testing
+
+We use the [Zig build system](https://ziglang.org/) for modern, cross-platform compilation.
+
+### 📦 Build Library
+```bash
+cd platform/posix
+zig build
+```
+
+### 🧪 Run Tests
+The test suite is interactive. Run it and follow the on-screen menu to execute specific tests or benchmarks.
+```bash
+zig build run_test
+```
+
+### 💡 Run Examples
+PhotonDB comes with several examples to help you get started.

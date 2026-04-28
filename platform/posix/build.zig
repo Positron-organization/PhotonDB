@@ -32,7 +32,7 @@ pub fn build(b: *std.Build) void {
 
     mod.addCSourceFile(.{
         .language = .c,
-        .file = b.path("photon_linux.c"),
+        .file = b.path("photon_posix.c"),
         .flags = &.{"-std=c99"},
     });
 
@@ -45,7 +45,7 @@ pub fn build(b: *std.Build) void {
     b.installFile("../../core/src/hooks.h", "include/hooks.h");
     b.installFile("../../core/src/vector.h", "include/vector.h");
     b.installFile("../../core/src/search.h", "include/search.h");
-    b.installFile("photon_linux.h", "include/photon_linux.h");
+    b.installFile("photon_posix.h", "include/photon_posix.h");
 
     b.installArtifact(lib);
 
@@ -84,7 +84,7 @@ pub fn build(b: *std.Build) void {
     });
     test_exe.root_module.addCSourceFile(.{
         .language = .c,
-        .file = b.path("photon_linux.c"),
+        .file = b.path("photon_posix.c"),
         .flags = &.{"-std=c99"},
     });
 
@@ -131,7 +131,7 @@ pub fn build(b: *std.Build) void {
     });
     example_exe.root_module.addCSourceFile(.{
         .language = .c,
-        .file = b.path("photon_linux.c"),
+        .file = b.path("photon_posix.c"),
         .flags = &.{"-std=c99"},
     });
 

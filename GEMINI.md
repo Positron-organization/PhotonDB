@@ -23,12 +23,12 @@ Its architecture focuses on **performance**, **portability**, and **cross-platfo
 │   ├── basic_usage
 │   ├── persistence
 │   ├── bulk_operations
-│   └── linux_default
+│   └── posix_default
 ├── platform
-│   └── linux
+│   └── posix
 │       ├── build.zig
-│       ├── photon_linux.c
-│       └── photon_linux.h
+│       ├── photon_posix.c
+│       └── photon_posix.h
 ├── test
 │   └── src
 │       └── main.cpp
@@ -46,7 +46,7 @@ This module contains a **struct of function pointers** for platform-dependent op
 
 ### Why does this exist?
 
-PhotonDB is built with a **multi-platform-first mindset**, abstracting OS-specific APIs (including filesystem access) so it can run on everything from bare-metal MCUs to full Linux systems.
+PhotonDB is built with a **multi-platform-first mindset**, abstracting OS-specific APIs (including filesystem access) so it can run on everything from bare-metal MCUs to full Linux/POSIX systems.
 
 ---
 
@@ -89,7 +89,7 @@ zig build run_test
 
 This directory contains the **build system and platform integration** for each supported target.
 
-### Linux Implementation (`photon_linux.h` / `photon_linux.c`)
+### POSIX Implementation (`photon_posix.h` / `photon_posix.c`)
 
 For Linux/POSIX systems, a default `PhotonInitStruct` is provided that uses standard C library functions (`malloc`, `free`, `fopen`, etc.). This allows for quick integration on standard operating systems.
 
@@ -99,7 +99,7 @@ Building the project (e.g., via `zig build`) generates artifacts in `zig-out/`:
 
 ### Running Examples
 
-Examples can be run using the Zig build system from the `platform/linux` directory:
+Examples can be run using the Zig build system from the `platform/posix` directory:
 
 ```bash
 zig build run_example -Dexample=<example_folder_name>
@@ -109,7 +109,7 @@ Available examples:
 - `basic_usage`: General CRUD and search operations.
 - `persistence`: Demonstrates saving and loading databases.
 - `bulk_operations`: Demonstrates handling larger datasets and deletions.
-- `linux_default`: Demonstrates using the built-in Linux default configuration.
+- `posix_default`: Demonstrates using the built-in POSIX default configuration.
 
 ---
 
@@ -135,4 +135,4 @@ PhotonDB separates:
 | Hooks    | OS abstraction             |
 | Platform | Build + target integration |
 
-This allows PhotonDB to scale from tiny MCUs to full Linux systems with minimal changes.
+This allows PhotonDB to scale from tiny MCUs to full POSIX systems with minimal changes.

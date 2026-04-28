@@ -8,7 +8,7 @@ extern "C" {
     #include "hooks.h"
     #include "vector.h"
     #include "search.h"
-    #include "photon_linux.h"
+    #include "photon_posix.h"
 }
 
 void run_basic_crud() {
@@ -51,7 +51,7 @@ void run_persistence_test() {
         std::cout << "Saved DB to " << filename << std::endl;
     }
 
-    PhotonDB loaded_db;
+    PhotonDB loaded_db = {0};
     if (photon_db_load(&loaded_db, filename) == 0) {
         std::cout << "Loaded DB from " << filename << std::endl;
         float out[3];
@@ -124,8 +124,8 @@ void run_benchmark() {
 }
 
 int main() {
-    // Initialize with Linux defaults
-    photonInit(photon_get_linux_init_struct());
+    // Initialize with POSIX defaults
+    photonInit(photon_get_posix_init_struct());
     photonVectorInit();
 
     int choice = 0;
@@ -138,16 +138,11 @@ int main() {
         std::cout << "3. Search Test" << std::endl;
         std::cout << "4. Benchmark" << std::endl;
         std::cout << "5. Run All Tests" << std::endl;
-        std::cout << "0. Exit" << std::endl;
+        std::cout << "6. Exit" << std::endl;
         std::cout << "Choice: ";
         
-        if (!(std::cin >> choice)) {
-            std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            continue;
-        }
-
-        if (choice == 0) break;
+        if (!(std::cin >> choice)) break;
+        if (choice == 6) break;
 
         switch (choice) {
             case 1: run_basic_crud(); break;
@@ -160,10 +155,9 @@ int main() {
                 run_search_test();
                 run_benchmark();
                 break;
-            default: std::cout << "Invalid choice." << std::endl; break;
+            default: std::cout << "Invalid choice." << std::endl;
         }
     }
 
-    std::cout << "Goodbye!" << std::endl;
     return 0;
 }
