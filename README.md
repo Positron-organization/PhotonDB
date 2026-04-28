@@ -14,6 +14,7 @@ Modern AI applications often require vector similarity search, but existing solu
 
 *   ✅ **Efficiency**: Runs on devices with as little as 64KB of RAM.
 *   ✅ **Speed**: Optimized brute-force search for small to medium datasets.
+*   ✅ **Quantization Support**: Native support for both **F32** and **INT8** (I8) vectors.
 *   ✅ **Safety**: No hidden allocations; you control the memory through hooks.
 *   ✅ **Simplicity**: A single-header-inspired design that is easy to integrate.
 
@@ -21,7 +22,7 @@ Modern AI applications often require vector similarity search, but existing solu
 
 ## 🚀 Key Features
 
-*   🎯 **Brute-force Precision**: High-accuracy dot product similarity search.
+*   🎯 **Brute-force Precision**: High-accuracy similarity search for F32 and INT8.
 *   ⚡ **SIMD Accelerated**: Hardware-accelerated search using SSE, AVX, AVX2 (x86), NEON (ARM), and RVV (RISC-V).
 *   💾 **Persistent Storage**: Robust Save/Load functionality using custom `.pdb` format.
 *   🌍 **Universal Portability**: Runs on everything from 8-bit MCUs to high-end Linux servers.
@@ -60,6 +61,9 @@ If you are running on a standard Linux or POSIX system, you can use the built-in
 photonInit(photon_get_posix_init_struct());
 photonVectorInit();
 photonDetectInit();
+
+// Optional: Print hardware capabilities to log
+photon_log_env_info();
 ```
 
 #### **Option B: Manual Configuration (RTOS/MCU)**
@@ -94,7 +98,7 @@ photonVectorInit();
 #include "vector.h"
 #include "search.h"
 
-// 🛠️ Create a DB
+// 🛠️ Create a DB (F32 or I8)
 PhotonDBConfig cfg = { .dim = 128, .dtype = PHOTON_VECTOR_F32 };
 PhotonDB db;
 photon_db_create(&cfg, &db);
@@ -103,12 +107,22 @@ photon_db_create(&cfg, &db);
 float vector[128] = { ... };
 int id = photon_db_insert(&db, vector);
 
+// 🔄 Upsert / Update
+photon_db_upsert(&db, id, vector);
+
+// 📤 Retrieve
+float out_v[128];
+photon_db_get(&db, id, out_v);
+
 // 💾 Save to Disk
 photon_db_save(&db, "vectors.pdb");
 
-// 🔍 Search
+// 🔍 Search (Dot Product, L2, or Cosine)
 PhotonSearchResult results[5];
 photon_db_search_dot_product(&db, query_vector, 5, results);
+
+// 🗑️ Delete
+photon_db_delete(&db, id);
 
 // 🧹 Cleanup
 photon_db_destroy(&db);

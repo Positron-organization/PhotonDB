@@ -51,6 +51,7 @@ This module provides **compile-time and runtime environment detection**. It iden
 *   **Architecture**: x86, x64, ARM, RISC-V.
 *   **Device Class**: Detects if the target is an embedded MCU.
 *   **SIMD Support**: Identifies availability of SSE, AVX, NEON, and RVV.
+*   **Runtime API**: `photon_get_env_info` and `photon_log_env_info` for diagnostic output.
 
 ---
 
@@ -68,10 +69,10 @@ PhotonDB is built with a **multi-platform-first mindset**, abstracting OS-specif
 
 This is the **core engine** of PhotonDB. It contains the main database logic, including:
 
-* CRUD operations
-* internal database management
-* vector storage
-* **Persistence (Save/Load to .pdb files)**
+* **CRUD operations**: `insert`, `get`, `delete`, and `upsert`.
+* **Data Types**: Supports both `PHOTON_VECTOR_F32` and `PHOTON_VECTOR_I8` (INT8 quantization).
+* **Internal management**: Dynamic resizing and ID mapping.
+* **Persistence**: Robust Save/Load to `.pdb` files.
 
 ---
 
@@ -79,8 +80,8 @@ This is the **core engine** of PhotonDB. It contains the main database logic, in
 
 This module implements **vector search algorithms**. It currently supports:
 
-* **Dot Product**: Direct similarity calculation.
-* **Euclidean (L2) Distance**: Distance-based similarity (lower is better).
+* **Dot Product**: Direct similarity calculation (F32 & I8).
+* **Euclidean (L2) Distance**: Distance-based similarity (F32 & I8).
 * **Cosine Similarity**: Angular similarity between vectors.
 * **Top-K filtering**: Efficient result ranking for all metrics.
 
